@@ -40,8 +40,8 @@ def download_spreadsheet():
         username_field = driver.find_element(By.ID, "Email")
         password_field = driver.find_element(By.ID, "Password")
 
-        username_field.send_keys("")
-        password_field.send_keys("")
+        username_field.send_keys("steveanthony999@gmail.com")
+        password_field.send_keys("bf3x!qLdassettiger")
 
         wait = WebDriverWait(driver, 10)
 
