@@ -16,6 +16,48 @@ import os
 load_dotenv()
 
 
+def test_browser_automation():
+    print("Testing browser startup...")
+    options = Options()
+    options.binary_location = "/usr/bin/chromium"
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    service = Service(executable_path='/usr/bin/chromedriver')
+    driver = webdriver.Chrome(service=service, options=options)
+
+    try:
+        driver.get("https://www.google.com")
+        print("Page title:", driver.title)  # Prints the title of the page
+        return driver.title  # Ensure that this value is returned
+    except Exception as e:
+        print("Error during browser test:", e)
+        raise  # Re-raise the exception to handle it in the Flask route
+    finally:
+        driver.quit()
+
+
+# def test_browser_automation():
+#     print("Testing browser startup...")
+#     options = Options()
+#     options.headless = True
+#     options.add_argument("--no-sandbox")
+#     options.add_argument("--disable-dev-shm-usage")  # Required if running in limited /tmp filesystems like Docker
+#
+#     service = Service(ChromeDriverManager().install())
+#     driver = webdriver.Chrome(service=service, options=options)
+#
+#     try:
+#         driver.get("https://www.google.com")
+#         print("Page title:", driver.title)  # Should print the title of the page, confirm browser load
+#         return driver.title
+#     except Exception as e:
+#         print("Error during browser test:", e)
+#     finally:
+#         driver.quit()
+
+
 def wait_for_download(directory, timeout=30):
     files_before = set(os.listdir(directory))
     elapsed_time = 0
@@ -289,5 +331,4 @@ def add_user_to_spreadsheet(user_id, user_email, spreadsheet_path):
         print(f"An error occurred: {e}")
 
 
-if __name__ == "__main__":
-    download_spreadsheet()
+# if __name__ == "__main__":

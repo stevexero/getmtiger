@@ -4,13 +4,32 @@ from flask import request
 from dotenv import load_dotenv
 import os
 import pandas as pd
-from browser_automation import download_spreadsheet, add_user_to_spreadsheet
+from browser_automation import download_spreadsheet, add_user_to_spreadsheet, test_browser_automation
 
 load_dotenv()
 
 app = Flask(__name__)
 
 download_dir = os.path.expanduser(os.environ.get('ASSET_TIGER_FILEPATH'))
+
+
+@app.route('/')
+def home():
+    return 'Welcome to the Home Page!'
+
+
+@app.route('/hello')
+def hello_world():
+    return jsonify({"message": 'Hello World!'})
+
+
+@app.route('/test-browser')
+def test_browser():
+    try:
+        page_title = test_browser_automation()
+        return jsonify({"message": "Browser automation successful", "pageTitle": page_title})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/items/get-all', methods=['GET'])
@@ -109,4 +128,5 @@ def download_spreadsheet_action():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Note the host parameter set to '0.0.0.0'
+    app.run(host='0.0.0.0', port=5000, debug=True)
