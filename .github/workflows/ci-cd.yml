@@ -58,4 +58,13 @@ jobs:
           docker pull stevexero/getmtiger:latest
           docker stop getmtiger || true
           docker rm getmtiger || true
-          docker run -d --name getmtiger -p 80:5000 stevexero/getmtiger:latest
+          docker run -d --name getmtiger -p 80:5000 \
+          -e ASSET_TIGER_USERNAME='${{ secrets.ASSET_TIGER_USERNAME }}' \
+          -e ASSET_TIGER_PASSWORD='${{ secrets.ASSET_TIGER_PASSWORD }}' \
+          -e ASSET_TIGER_FILENAME='${{ secrets.ASSET_TIGER_FILENAME }}' \
+          -e ASSET_TIGER_FILEPATH='${{ secrets.ASSET_TIGER_FILEPATH }}' \
+          -e ASSET_TIGER_LOGIN_URL='${{ secrets.ASSET_TIGER_LOGIN_URL }}' \
+          -e ASSET_TIGER_DASHBOARD_URL='${{ secrets.ASSET_TIGER_DASHBOARD_URL }}' \
+          -e ASSET_TIGER_EXPORT_URL='${{ secrets.ASSET_TIGER_EXPORT_URL }}' \
+          -e ASSET_TIGER_IMPORT_URL='${{ secrets.ASSET_TIGER_IMPORT_URL }}' \
+          stevexero/getmtiger:latest
