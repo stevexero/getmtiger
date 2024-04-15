@@ -1,6 +1,7 @@
 import pytest
 from flask_testing import TestCase
 from app import create_app
+from services.temp_service import generate_temp_token
 
 
 class MyTest(TestCase):
@@ -26,9 +27,12 @@ class MyTest(TestCase):
         self.assertIn('Browser automation successful', response.json['message'])
 
     def test_add_user(self):
+        token = generate_temp_token('testuser')
         user_data = {
             "user_id": "testuser",
             "email": "testuser@example.com"
         }
-        response = self.client.post('/api/add-user', json=user_data)
+
+        headers = {'Authorization': f'Bearer {token}'}
+        response = self.client.post('/api/add-user', json=user_data, headers=headers)
         self.assertEqual(response.status_code, 201)
