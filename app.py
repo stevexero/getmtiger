@@ -1,11 +1,11 @@
 from flask import Flask
-from flask import jsonify
-# from flask import request
 from dotenv import load_dotenv
-import os
+# import os
 # import pandas as pd
 # from browser_automation import download_spreadsheet, add_user_to_spreadsheet, test_browser_automation
-from browser_automation import test_browser_automation
+from routes.home_routes import home_bp
+from routes.test_routes import test_bp
+from routes.user_routes import user_bp
 
 load_dotenv()
 
@@ -15,28 +15,16 @@ def create_app():
 
     # download_dir = os.path.expanduser(os.environ.get('ASSET_TIGER_FILEPATH'))
 
-    @app.route('/')
-    def home():
-        return 'Welcome to the Home Page!'
-
-    @app.route('/hello')
-    def hello_world():
-        return jsonify({"message": 'Hello World!'})
-
-    @app.route('/test-browser')
-    def test_browser():
-        try:
-            page_title = test_browser_automation()
-            return jsonify({"message": "Browser automation successful", "pageTitle": page_title})
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+    app.register_blueprint(home_bp)
+    app.register_blueprint(test_bp)
+    app.register_blueprint(user_bp)
 
     return app
 
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
 
 # @app.route('/api/items/get-all', methods=['GET'])
 # def read_spreadsheet():
