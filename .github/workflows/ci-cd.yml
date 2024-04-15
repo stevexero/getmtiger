@@ -36,6 +36,7 @@ jobs:
         echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
         echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> $GITHUB_ENV
         echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> $GITHUB_ENV
+        echo "ENVIRONMENT=${{ secrets.TEMP_SECRET_KEY }}" >> $GITHUB_ENV
 
     - name: Run Tests
       run: |

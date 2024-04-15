@@ -1,3 +1,4 @@
+import os
 import pytest
 from flask_testing import TestCase
 from app import create_app
@@ -6,6 +7,8 @@ from services.temp_service import generate_temp_token
 
 class MyTest(TestCase):
     def create_app(self):
+        if not os.getenv('TEMP_SECRET_KEY'):
+            os.environ['TEMP_SECRET_KEY'] = 'temp_secret_key'
         app = create_app()
         app.config['TESTING'] = True
         return app
