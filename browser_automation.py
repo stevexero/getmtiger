@@ -1,6 +1,8 @@
+import os
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-# from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 # from selenium.webdriver.common.by import By
 # from selenium.webdriver.support.ui import WebDriverWait
@@ -19,38 +21,67 @@ load_dotenv()
 def test_browser_automation():
     print("Testing browser startup...")
     options = Options()
-    options.binary_location = "/usr/bin/chromium"
-    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    service = Service(executable_path='/usr/bin/chromedriver')
+    if os.environ.get("ENVIRONMENT") == "development":
+        options.headless = True
+
+        service = Service(ChromeDriverManager().install())
+    else:  # production
+        options.binary_location = "/usr/bin/chromium"
+        options.add_argument("--headless")
+
+        service = Service(executable_path='/usr/bin/chromedriver')
+
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
         driver.get("https://www.google.com")
-        print("Page title:", driver.title)  # Prints the title of the page
-        return driver.title  # Ensure that this value is returned
+        print("Page title:", driver.title)
+        return driver.title
     except Exception as e:
         print("Error during browser test:", e)
-        raise  # Re-raise the exception to handle it in the Flask route
     finally:
         driver.quit()
 
 
+# Works in production
+# def test_browser_automation():
+#     print("Testing browser startup...")
+#     options = Options()
+#     options.binary_location = "/usr/bin/chromium"
+#     options.add_argument("--headless")
+#     options.add_argument("--no-sandbox")
+#     options.add_argument("--disable-dev-shm-usage")
+#
+#     service = Service(executable_path='/usr/bin/chromedriver')
+#     driver = webdriver.Chrome(service=service, options=options)
+#
+#     try:
+#         driver.get("https://www.google.com")
+#         print("Page title:", driver.title)
+#         return driver.title
+#     except Exception as e:
+#         print("Error during browser test:", e)
+#         raise
+#     finally:
+#         driver.quit()
+
+# Works in development
 # def test_browser_automation():
 #     print("Testing browser startup...")
 #     options = Options()
 #     options.headless = True
 #     options.add_argument("--no-sandbox")
-#     options.add_argument("--disable-dev-shm-usage")  # Required if running in limited /tmp filesystems like Docker
+#     options.add_argument("--disable-dev-shm-usage")
 #
 #     service = Service(ChromeDriverManager().install())
 #     driver = webdriver.Chrome(service=service, options=options)
 #
 #     try:
 #         driver.get("https://www.google.com")
-#         print("Page title:", driver.title)  # Should print the title of the page, confirm browser load
+#         print("Page title:", driver.title)
 #         return driver.title
 #     except Exception as e:
 #         print("Error during browser test:", e)

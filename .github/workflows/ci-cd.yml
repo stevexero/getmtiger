@@ -72,4 +72,8 @@ jobs:
           -e ASSET_TIGER_DASHBOARD_URL='${{ secrets.ASSET_TIGER_DASHBOARD_URL }}' \
           -e ASSET_TIGER_EXPORT_URL='${{ secrets.ASSET_TIGER_EXPORT_URL }}' \
           -e ASSET_TIGER_IMPORT_URL='${{ secrets.ASSET_TIGER_IMPORT_URL }}' \
+          -e ENVIRONMENT='${{ secrets.ENVIRONMENT }}' \
+          -e TEMP_SECRET_KEY='${{ secrets.TEMP_SECRET_KEY }}' \
+          -e SUPABASE_URL='${{ secrets.SUPABASE_URL }}' \
+          -e SUPABASE_SERVICE_ROLE_KEY='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'
           stevexero/getmtiger:latest
