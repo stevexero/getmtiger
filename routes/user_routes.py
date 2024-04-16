@@ -34,9 +34,9 @@ def add_user():
     except ValidationError as ve:
         return jsonify({'error': str(ve)}), 400
 
-    user_data, error = add_user_to_database(user.dict())
+    user_data, error, status_code = add_user_to_database(user.dict())
 
     if error:
-        return jsonify({'error': str(error)}), 500
+        return jsonify({'error': str(error)}), status_code
 
-    return jsonify(user_data), 201
+    return jsonify(user_data), status_code
