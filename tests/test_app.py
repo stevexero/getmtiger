@@ -36,6 +36,13 @@ class MyTest(TestCase):
             "email": "testuser@example.com"
         }
 
+        # First request to add a new user
         headers = {'Authorization': f'Bearer {token}'}
         response = self.client.post('/api/add-user', json=user_data, headers=headers)
         self.assertEqual(response.status_code, 201)
+
+        # Second request with the same user data
+        response = self.client.post('/api/add-user', json=user_data, headers=headers)
+        self.assertNotEqual(response.status_code, 201, "Should not succeed")
+        self.assertTrue('error' in response.json, "Should return error message")
+        self.assertEqual(response.status_code, 409, "Should return a conflict status code (user already exists)")

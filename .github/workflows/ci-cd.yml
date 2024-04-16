@@ -83,5 +83,5 @@ jobs:
           -e ENVIRONMENT='${{ secrets.ENVIRONMENT }}' \
           -e TEMP_SECRET_KEY='${{ secrets.TEMP_SECRET_KEY }}' \
           -e SUPABASE_URL='${{ secrets.SUPABASE_URL }}' \
-          -e SUPABASE_SERVICE_ROLE_KEY='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'
+          -e SUPABASE_SERVICE_ROLE_KEY='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}' \
           stevexero/getmtiger:latest
