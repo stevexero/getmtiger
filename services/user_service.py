@@ -20,12 +20,12 @@ def check_user_exists(user_id, email):
 
 def add_user_to_database(data):
     if check_user_exists(data['user_id'], data['email']):
-        return None, 'User with this ID or Email already exists'
+        return None, 'User with this ID or Email already exists', 409
 
     try:
         response = supabase.table('users').insert(data).execute()
         if hasattr(response, 'error') and response.error:
-            return None, response.error
-        return response.data[0], None
+            return None, response.error, 500
+        return response.data[0], None, 201
     except Exception as e:
-        return None, str(e)
+        return None, str(e), 500
