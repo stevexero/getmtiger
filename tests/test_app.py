@@ -54,16 +54,14 @@ class MyTest(TestCase):
         # Verify that the add user function was called with the correct data
         mock_add_user_to_database.assert_called_once_with(user_data)
 
-        # Setup mocks for duplicate user addition
-        mock_add_user_to_database.return_value = (None, 'User with this ID or Email already exists', 409)
-
         # Second request with the same user data
         # response = self.client.post('/api/add-user', json=user_data, headers=headers)
         # self.assertNotEqual(response.status_code, 201, "Should not succeed")
         # self.assertTrue('error' in response.json, "Should return error message")
         # self.assertEqual(response.status_code, 409, "Should return a conflict status code (user already exists)")
-        # Second request with the same user data to simulate a duplicate entry
+        mock_add_user_to_database.return_value = (None, 'User with this ID or Email already exists', 409)
         response = self.client.post('/api/add-user', json=user_data, headers=headers)
-        self.assertEqual(response.status_code, 409)
+        self.assertNotEqual(response.status_code, 201)
         self.assertIn('error', response.json)
         self.assertEqual(response.json['error'], 'User with this ID or Email already exists')
+        self.assertEqual(response.status_code, 409)
