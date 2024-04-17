@@ -30,7 +30,8 @@ class MyTest(TestCase):
         self.assertIn('pageTitle', response.json)
         self.assertIn('Browser automation successful', response.json['message'])
 
-    @patch('services.temp_service.decode_clerk_token')
+    # @patch('services.temp_service.decode_clerk_token')
+    @patch('routes.user_routes.decode_clerk_token')
     @patch('services.user_service.add_user_to_database')
     # def test_add_user(self):
     def test_add_user(self, mock_add_user_to_database, mock_decode_clerk_token):
@@ -60,6 +61,7 @@ class MyTest(TestCase):
         # self.assertEqual(response.status_code, 409, "Should return a conflict status code (user already exists)")
         mock_add_user_to_database.return_value = (None, 'User with this ID or Email already exists', 409)
         response = self.client.post('/api/add-user', json=user_data, headers=headers)
-        self.assertEqual(response.status_code, 409)
-        self.assertTrue('error' in response.json)
+        self.assertNotEqual(response.status_code, 201)
+        self.assertIn('error', response.json)
         self.assertEqual(response.json['error'], 'User with this ID or Email already exists')
+        self.assertEqual(response.status_code, 409)
