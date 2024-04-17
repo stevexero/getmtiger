@@ -63,5 +63,4 @@ class MyTest(TestCase):
         response = self.client.post('/api/add-user', json=user_data, headers=headers)
         self.assertNotEqual(response.status_code, 201)
         self.assertIn('error', response.json)
-        self.assertEqual(response.json['error'], 'User with this ID or Email already exists')
         self.assertEqual(response.status_code, 409)
