@@ -85,4 +85,8 @@ jobs:
           -e ENVIRONMENT='${{ secrets.ENVIRONMENT }}' \
           -e SUPABASE_URL='${{ secrets.SUPABASE_URL }}' \
           -e SUPABASE_SERVICE_ROLE_KEY='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}' \
+          -e BOX_VALET_JWT_AUDIENCE='${{ secrets.BOX_VALET_JWT_AUDIENCE }}' \
+          -e BOX_VALET_JWT_PROD_ISSUER='${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}' \
+          -e JWKS_URL='${{ secrets.JWKS_URL }}' \
           stevexero/getmtiger:latest
+          docker image prune -af
