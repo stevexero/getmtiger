@@ -1,10 +1,65 @@
 import os
 from supabase import create_client, Client
+from jwt import decode, exceptions
+from jwt.jwks_client import PyJWKClient
 
-SB_URL = os.getenv('SUPABASE_URL')
+SB_URL = os.environ.get('SUPABASE_URL')
+if not SB_URL:
+    raise ValueError("Configuration error: SUPABASE_URL is not set.")
+
 # SB_KEY = os.getenv('SUPABASE_KEY')  # TODO: Set up for production w/ permissions
-SB_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY')
+
+SB_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
+if not SB_KEY:
+    raise ValueError("Configuration error: SUPABASE_SERVICE_ROLE_KEY is not set.")
+
+audience = os.environ.get('BOX_VALET_JWT_AUDIENCE')
+if not audience:
+    raise ValueError("Configuration error: BOX_VALET_JWT_AUDIENCE is not set.")
+
+prod_issuer = os.environ.get('BOX_VALET_JWT_PROD_ISSUER')
+if not prod_issuer:
+    raise ValueError("Configuration error: BOX_VALET_JWT_PROD_ISSUER is not set.")
+
+jwks_url = os.environ.get('JWKS_URL')
+if not jwks_url:
+    raise ValueError("Configuration error: JWKS_URL is not set.")
+
 supabase: Client = create_client(SB_URL, SB_KEY)
+
+
+def decode_clerk_token(token):
+    """
+    Decode a JWT token using the public key obtained from Clerk's JWKS URI.
+    """
+    print("from decode_clerk_token")
+    print(token)
+
+    jwk_client = PyJWKClient(jwks_url)
+    print('from decode_clerk_token')
+    print(jwk_client)
+
+    # Decode the token using the public key
+    try:
+        signing_key = jwk_client.get_signing_key_from_jwt(token)
+        print('from decode_clerk_token')
+        print("Using signing key with KID:", signing_key.key_id)
+
+        decoded_token = decode(
+            token,
+            signing_key.key,
+            algorithms=["RS256"],
+            audience=audience,
+            issuer=prod_issuer
+        )
+
+        print('from decode_clerk_token')
+        print("Decoded JWT payload:", decoded_token)
+
+        return decoded_token['sub'], None
+    except exceptions.PyJWTError as error:
+        print("Error decoding JWT:", str(error))
+        return None, str(error)
 
 
 def check_user_exists(user_id, email):

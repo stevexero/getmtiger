@@ -1,20 +1,10 @@
 from flask import Blueprint, jsonify, request
-from services.temp_service import generate_temp_token, decode_temp_token, decode_clerk_token
+from services.user_service import decode_clerk_token
 from models.user_models import User
 from services.user_service import add_user_to_database, get_user_from_database
 from pydantic import ValidationError
 
 user_bp = Blueprint('user', __name__)
-
-
-@user_bp.route('/temp-login', methods=['POST'])
-def temp_login():
-    user_id = request.json.get('user_id')
-    if user_id:
-        token = generate_temp_token(user_id)
-        return jsonify({'token': token}), 200
-    else:
-        return jsonify({'error': 'Invalid credentials'}), 401
 
 
 # Add User

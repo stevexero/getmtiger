@@ -18,16 +18,6 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Decode Private Key
-      run: |
-        echo "${{ secrets.PRIVATE_KEY_BASE64 }}" | base64 --decode > ${{ github.workspace }}/private_key.pem
-      shell: bash
-
-    - name: Decode Public Key
-      run: |
-        echo "${{ secrets.PUBLIC_KEY_BASE64 }}" | base64 --decode > ${{ github.workspace }}/public_key.pem
-      shell: bash
-
     - name: Cache Python packages
       uses: actions/cache@v2
       with:
@@ -46,14 +36,8 @@ jobs:
         echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
         echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> $GITHUB_ENV
         echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> $GITHUB_ENV
-        echo "TEMP_SECRET_KEY=${{ secrets.TEMP_SECRET_KEY }}" >> $GITHUB_ENV
-        echo "BOXVALET_TEST_PRIVATE_KEY_PATH=${{ github.workspace }}/private_key.pem" >> $GITHUB_ENV
-        echo "BOXVALET_TEST_PUBLIC_KEY_PATH=${{ github.workspace }}/public_key.pem" >> $GITHUB_ENV
-        echo "BOXVALET_TEST_KEY_ID=${{ secrets.BOXVALET_TEST_KEY_ID }}" >> $GITHUB_ENV
         echo "BOX_VALET_JWT_AUDIENCE=${{ secrets.BOX_VALET_JWT_AUDIENCE }}" >> $GITHUB_ENV
-        echo "BOX_VALET_JWT_TEST_ISSUER=${{ secrets.BOX_VALET_JWT_TEST_ISSUER }}" >> $GITHUB_ENV
         echo "BOX_VALET_JWT_PROD_ISSUER=${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}" >> $GITHUB_ENV
-        echo "OPENID_CONFIG_URL=${{ secrets.OPENID_CONFIG_URL }}" >> $GITHUB_ENV
         echo "JWKS_URL=${{ secrets.JWKS_URL }}" >> $GITHUB_ENV
 
     - name: Run Tests
@@ -99,7 +83,6 @@ jobs:
           -e ASSET_TIGER_EXPORT_URL='${{ secrets.ASSET_TIGER_EXPORT_URL }}' \
           -e ASSET_TIGER_IMPORT_URL='${{ secrets.ASSET_TIGER_IMPORT_URL }}' \
           -e ENVIRONMENT='${{ secrets.ENVIRONMENT }}' \
-          -e TEMP_SECRET_KEY='${{ secrets.TEMP_SECRET_KEY }}' \
           -e SUPABASE_URL='${{ secrets.SUPABASE_URL }}' \
           -e SUPABASE_SERVICE_ROLE_KEY='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}' \
           stevexero/getmtiger:latest
