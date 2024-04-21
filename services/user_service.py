@@ -50,3 +50,25 @@ def add_user_to_database(data):
         return response.data[0], None, 201
     except Exception as e:
         return None, str(e), 500
+
+
+def get_user_from_database(user_id):
+    print("from get_user_from_database")
+    print(user_id)
+
+    try:
+        response = supabase.table('users').select('*').eq('user_id', user_id).execute()
+        print("from get_user_from_database")
+        print(response)
+
+        print("from get_user_from_database")
+        data = response.data
+        print(data)
+        if data:
+            print("User fetched successfully:", data)
+            return data[0] if data else None, None, 200
+        else:
+            return None, "User not found", 404
+
+    except Exception as e:
+        return None, str(e), 500
