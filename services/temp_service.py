@@ -25,7 +25,11 @@ if not private_key_path:
     raise SystemExit("Configuration error: Private key path is missing.")
 
 private_key = load_test_private_key(private_key_path)
-print("Private key successfully loaded.")
+# private_key = os.environ.get('BOXVALET_TEST_PRIVATE_KEY')
+# if not private_key:
+#     raise ValueError("Configuration error: BOXVALET_TEST_PRIVATE_KEY is not set.")
+# else:
+#     print("Private key successfully loaded.")
 
 
 def load_test_public_key(path):
@@ -44,7 +48,11 @@ if not public_key_path:
     raise SystemExit("Configuration error: Public key path is missing.")
 
 public_key = load_test_public_key(public_key_path)
-print("Public key successfully loaded.")
+# public_key = os.environ.get('BOXVALET_TEST_PUBLIC_KEY')
+# if not public_key:
+#     raise ValueError("Configuration error: BOXVALET_TEST_PUBLIC_KEY is not set.")
+# else:
+#     print("Public key successfully loaded.")
 
 
 key_id = os.getenv('BOXVALET_TEST_KEY_ID')
