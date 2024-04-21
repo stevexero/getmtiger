@@ -52,14 +52,6 @@ class MyTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json['user_id'], 'user_id_of_testuser')
 
-        # mock_add_user_to_database.return_value = (None, 'User with this ID or Email already exists', 409)
-        # response = self.client.post('/api/add-user', json=user_data, headers=headers)
-
-        # self.assertNotEqual(response.status_code, 201)
-        # self.assertIn('error', response.json)
-        # self.assertEqual(response.json['error'], 'User with this ID or Email already exists')
-        # self.assertEqual(response.status_code, 409)
-
     @patch('routes.user_routes.decode_clerk_token')
     @patch('services.user_service.add_user_to_database')
     def test_add_duplicate_user(self, mock_add_user_to_database, mock_decode_clerk_token):
@@ -75,13 +67,12 @@ class MyTest(TestCase):
 
         response = self.client.post('/api/add-user', json=user_data, headers=headers)
 
-        self.assertNotEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 409)
         self.assertIn('error', response.json)
         self.assertEqual(response.json['error'], 'User with this ID or Email already exists')
-        self.assertEqual(response.status_code, 409)
 
     @patch('routes.user_routes.decode_clerk_token')
-    @patch('services.user_service.mock_get_user_from_database')
+    @patch('services.user_service.get_user_from_database')
     def test_get_current_user(self, mock_decode_clerk_token, mock_get_user_from_database):
         user_data = [{'user_id': 'user_id_of_testuser', 'created_at': '2024-04-18T05:41:25.519126+00:00', 'email': 'testuser@example.com', 'user_role': 'customer_active'}]
         # Retrieve token to extract user_id
