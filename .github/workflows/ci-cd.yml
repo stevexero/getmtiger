@@ -52,6 +52,9 @@ jobs:
         echo "BOXVALET_TEST_KEY_ID=${{ secrets.BOXVALET_TEST_KEY_ID }}" >> $GITHUB_ENV
         echo "BOX_VALET_JWT_AUDIENCE=${{ secrets.BOX_VALET_JWT_AUDIENCE }}" >> $GITHUB_ENV
         echo "BOX_VALET_JWT_TEST_ISSUER=${{ secrets.BOX_VALET_JWT_TEST_ISSUER }}" >> $GITHUB_ENV
+        echo "BOX_VALET_JWT_PROD_ISSUER=${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}" >> $GITHUB_ENV
+        echo "OPENID_CONFIG_URL=${{ secrets.OPENID_CONFIG_URL }}" >> $GITHUB_ENV
+        echo "JWKS_URL=${{ secrets.JWKS_URL }}" >> $GITHUB_ENV
 
     - name: Run Tests
       run: |
