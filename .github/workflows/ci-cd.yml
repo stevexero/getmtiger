@@ -51,6 +51,7 @@ jobs:
         echo "BOXVALET_TEST_PUBLIC_KEY_PATH=${{ github.workspace }}/public_key.pem" >> $GITHUB_ENV
         echo "BOXVALET_TEST_KEY_ID=${{ secrets.BOXVALET_TEST_KEY_ID }}" >> $GITHUB_ENV
         echo "BOX_VALET_JWT_AUDIENCE=${{ secrets.BOX_VALET_JWT_AUDIENCE }}" >> $GITHUB_ENV
+        echo "BOX_VALET_JWT_TEST_ISSUER=${{ secrets.BOX_VALET_JWT_TEST_ISSUER }}" >> $GITHUB_ENV
 
     - name: Run Tests
       run: |
