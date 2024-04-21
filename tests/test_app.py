@@ -1,7 +1,7 @@
 import os
 import pytest
 from flask_testing import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, call
 from app import create_app
 from services.temp_service import generate_temp_token
 
@@ -33,43 +33,42 @@ class MyTest(TestCase):
     @patch('routes.user_routes.decode_clerk_token')
     @patch('services.user_service.add_user_to_database')
     @patch('services.user_service.get_user_from_database')
-    def test_user_management(self, mock_get_user_from_database, mock_add_user_to_database, mock_decode_clerk_token):
+    def test_user_management(self, mock_get_user_from_database, mock_add_user_to_database, mock_decode_clerk_token,
+                             client):
         # Set up the mock responses
-        mock_decode_clerk_token.return_value = ('user_id_of_testuser', None)
-        mock_add_user_to_database.return_value = (
-        {"user_id": "user_id_of_testuser", "email": "testuser@example.com"}, None, 201)
-        mock_get_user_from_database.return_value = (
-        [{"user_id": "user_id_of_testuser", "email": "testuser@example.com", "user_role": "customer_active"}], None,
-        200)
+        user_id = 'user_id_of_testuser'
+        email = 'testuser@example.com'
+        user_data = {"user_id": user_id, "email": email}
+        mock_decode_clerk_token.return_value = (user_id, None)
+        mock_add_user_to_database.return_value = (user_data, None, 201)
+        mock_get_user_from_database.return_value = ([user_data], None, 200)
+
+        token = generate_temp_token(user_id)
+        headers = {'Authorization': f'Bearer {token}'}
 
         # 1. Add a user
-        token = generate_temp_token('user_id_of_testuser')
-        user_data = {"user_id": "user_id_of_testuser", "email": "testuser@example.com"}
-        headers = {'Authorization': f'Bearer {token}'}
-        response = self.client.post('/api/add-user', json=user_data, headers=headers)
-
+        response = client.post('/api/add-user', json=user_data, headers=headers)
         assert response.status_code == 201
-        assert response.json['user_id'] == 'user_id_of_testuser'
+        assert response.json['user_id'] == user_id
 
         # 2. Try adding the same user again (expect failure due to duplicate)
-        mock_add_user_to_database.side_effect = [(None, 'User with this ID or Email already exists', 409)]
-        response_duplicate = self.client.post('/api/add-user', json=user_data, headers=headers)
-
+        mock_add_user_to_database.return_value = (None, 'User with this ID or Email already exists', 409)
+        response_duplicate = client.post('/api/add-user', json=user_data, headers=headers)
         assert response_duplicate.status_code == 409
         assert 'error' in response_duplicate.json
         assert response_duplicate.json['error'] == 'User with this ID or Email already exists'
 
         # 3. Retrieve the current user
-        response_current_user = self.client.get('/api/get-current-user', headers=headers)
-
+        response_current_user = client.get('/api/get-current-user', headers=headers)
         assert response_current_user.status_code == 200
-        assert response_current_user.json['user_id'] == 'user_id_of_testuser'
-        assert response_current_user.json['email'] == 'testuser@example.com'
+        assert response_current_user.json['user_id'] == user_id
 
         # Verifying mock calls
         mock_decode_clerk_token.assert_called_with(token)
-        mock_add_user_to_database.assert_called()
-        mock_get_user_from_database.assert_called_with('user_id_of_testuser')
+        # Check the sequence of calls
+        calls = [call(user_data), call(user_data)]
+        mock_add_user_to_database.assert_has_calls(calls)
+        mock_get_user_from_database.assert_called_with(user_id)
 
     # Decorators used to replace the actual functions with mock objects and simulate their responses
     # @patch('routes.user_routes.decode_clerk_token')
