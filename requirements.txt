@@ -10,6 +10,7 @@ et-xmlfile==1.1.0
 Flask==3.0.2
 Flask-Cors==4.0.0
 Flask-Testing==0.8.1
+gunicorn==22.0.0
 h11==0.14.0
 idna==3.6
 itsdangerous==2.1.2
