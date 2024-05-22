@@ -5,8 +5,10 @@ services:
     container_name: getmtiger
     environment:
       - FLASK_ENV=production
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
     ports:
-      - "5001:5001"
+      - "8080:5001"
 
   nginx:
     image: nginx:latest
