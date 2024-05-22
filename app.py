@@ -1,10 +1,12 @@
 from flask import Flask
 from dotenv import load_dotenv
+from flask_cors import CORS
 # import os
 # import pandas as pd
 # from browser_automation import download_spreadsheet, add_user_to_spreadsheet, test_browser_automation
 from routes.home_routes import home_bp
 from routes.test_routes import test_bp
+from routes.auth_routes import auth_bp
 from routes.user_routes import user_bp
 
 load_dotenv()
@@ -12,11 +14,13 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     # download_dir = os.path.expanduser(os.environ.get('ASSET_TIGER_FILEPATH'))
 
     app.register_blueprint(home_bp)
     app.register_blueprint(test_bp)
+    app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
 
     return app
