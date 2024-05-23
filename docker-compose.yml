@@ -7,6 +7,7 @@ services:
       - FLASK_ENV=production
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
+      - SECRET_KEY=${SECRET_KEY}
     ports:
       - "8080:5001"
     deploy:
@@ -26,3 +27,9 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl
     depends_on:
       - flask_app
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.25"
+    restart: always

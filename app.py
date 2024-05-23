@@ -14,7 +14,8 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    # CORS(app)
+    CORS(app, resources={r"/*": {"origins": ["https://www.box-valet.com"]}}, supports_credentials=True)
 
     # download_dir = os.path.expanduser(os.environ.get('ASSET_TIGER_FILEPATH'))
 
