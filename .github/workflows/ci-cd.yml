@@ -39,6 +39,7 @@ jobs:
         echo "BOX_VALET_JWT_AUDIENCE=${{ secrets.BOX_VALET_JWT_AUDIENCE }}" >> $GITHUB_ENV
         echo "BOX_VALET_JWT_PROD_ISSUER=${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}" >> $GITHUB_ENV
         echo "JWKS_URL=${{ secrets.JWKS_URL }}" >> $GITHUB_ENV
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
     - name: Run Tests
       run: |
@@ -85,6 +86,7 @@ jobs:
           -e ENVIRONMENT='${{ secrets.ENVIRONMENT }}' \
           -e SUPABASE_URL='${{ secrets.SUPABASE_URL }}' \
           -e SUPABASE_SERVICE_ROLE_KEY='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}' \
+          -e SECRET_KEY='${{ secrets.SECRET_KEY }}' \
           -e BOX_VALET_JWT_AUDIENCE='${{ secrets.BOX_VALET_JWT_AUDIENCE }}' \
           -e BOX_VALET_JWT_PROD_ISSUER='${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}' \
           -e JWKS_URL='${{ secrets.JWKS_URL }}' \
