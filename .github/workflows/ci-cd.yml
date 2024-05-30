@@ -40,6 +40,7 @@ jobs:
         echo "BOX_VALET_JWT_PROD_ISSUER=${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}" >> $GITHUB_ENV
         echo "JWKS_URL=${{ secrets.JWKS_URL }}" >> $GITHUB_ENV
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> $GITHUB_ENV
 
     - name: Run Tests
       run: |
@@ -90,5 +91,6 @@ jobs:
           -e BOX_VALET_JWT_AUDIENCE='${{ secrets.BOX_VALET_JWT_AUDIENCE }}' \
           -e BOX_VALET_JWT_PROD_ISSUER='${{ secrets.BOX_VALET_JWT_PROD_ISSUER }}' \
           -e JWKS_URL='${{ secrets.JWKS_URL }}' \
+          -e RESEND_API_KEY='${{ secrets.RESEND_API_KEY }}' \
           stevexero/getmtiger:latest
           docker image prune -af
