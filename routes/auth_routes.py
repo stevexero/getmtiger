@@ -7,7 +7,7 @@ from flask_cors import cross_origin
 from pydantic import ValidationError
 from models.user_models import User
 from services.auth_service import add_user_to_database, hash_password, generate_token, check_password_hash, \
-    get_user_from_database_by_email, send_code_to_database, compare_code_to_database
+    get_user_from_database_by_email, send_code_to_database, compare_code_to_database, update_user_email_in_database
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -145,6 +145,38 @@ def submit_verification_code():
             return jsonify(user), 200
         else:
             return jsonify({'message': 'Invalid code'}), 401
+    except Exception as e:
+        print("An error occurred:", traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
+
+
+#
+# Update User Email
+#
+@auth_bp.route('/api/updateuseremail', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def update_user_email():
+    try:
+        data = request.get_json()
+        old_email = data['oldEmail']
+        new_email = data['newEmail']
+
+        res, error, status_code = update_user_email_in_database(old_email, new_email)
+
+        if error:
+            print("Error updating email:", error)
+            return jsonify({'error': error}), status_code
+
+        user, error, status_code = get_user_from_database_by_email(new_email)
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        if res:
+            return jsonify(user), 200
+        else:
+            return jsonify({'message': 'Invalid email'}), 401
+
     except Exception as e:
         print("An error occurred:", traceback.format_exc())
         return jsonify({'error': str(e)}), 500

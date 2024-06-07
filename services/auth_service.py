@@ -68,7 +68,6 @@ def check_user_exists(email):
 
 
 def add_user_to_database(data):
-
     if check_user_exists(data['email']):
         return None, 'User with this Email already exists', 409
 
@@ -153,7 +152,8 @@ def compare_code_to_database(email, code):
         if db_code != code:
             return None, "Code didn't match", 401
 
-        update_response = supabase.from_('users').update({"email_verified": True, "temp_code": None}).eq('email', email).execute()
+        update_response = supabase.from_('users').update({"email_verified": True, "temp_code": None}).eq('email',
+                                                                                                         email).execute()
 
         if update_response.data is None:
             return None, "Failed to update email_verified field", 500
@@ -161,4 +161,23 @@ def compare_code_to_database(email, code):
         return True, None, 200
     except Exception as e:
         print("Error comparing code:", str(e))
+        return None, str(e), 500
+
+
+def update_user_email_in_database(email, new_email):
+    try:
+        response = supabase.from_('users').select('*').eq('email', email).single().execute()
+
+        if response.data is None:
+            return None, "User not found", 404
+
+        update_response = supabase.from_('users').update({"email": new_email}).eq('email',
+                                                                                  email).execute()
+
+        if update_response.data is None:
+            return None, "Failed to update email", 500
+
+        return True, None, 200
+    except Exception as e:
+        print("Error updating email:", str(e))
         return None, str(e), 500
