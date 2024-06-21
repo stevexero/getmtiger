@@ -127,3 +127,26 @@ def get_user_from_database(user_id):
 
     except Exception as e:
         return None, str(e), 500
+
+
+#
+# Get All Customers From Database
+#
+def get_all_customers_from_database():
+    try:
+        response = supabase.table('users').select('*').eq('user_role', 'customer_active').execute()
+
+        filtered_response = [
+            {k: v for k, v in user.items() if k != 'password'}
+            for user in response.data
+        ]
+
+        data = filtered_response
+
+        if data:
+            return data, None, 200
+        else:
+            return None, "Customers not found", 404
+
+    except Exception as e:
+        return None, str(e), 500
