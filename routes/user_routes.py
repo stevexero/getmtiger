@@ -1,10 +1,27 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from services.user_service import decode_clerk_token
 from models.user_models import User
-from services.user_service import add_user_to_database, get_user_from_database
+from services.user_service import add_user_to_database, get_user_from_database, get_all_customers_from_database
 from pydantic import ValidationError
+from flask_cors import cross_origin
 
 user_bp = Blueprint('user', __name__)
+
+
+#
+# Get All Customers
+#
+@user_bp.route('/api/get_customers', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_customers():
+    customers, error, status_code = get_all_customers_from_database()
+
+    response = make_response(jsonify(customers), status_code)
+
+    if error:
+        return jsonify({'error': str(error)}), status_code
+
+    return response
 
 
 # Add User
