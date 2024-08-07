@@ -5,7 +5,7 @@ from routes.home_routes import home_bp
 from routes.test_routes import test_bp
 from routes.auth_routes import auth_bp
 from routes.user_routes import user_bp
-from routes.session_routes import session_bp
+from routes.analytics_routes import analytics_bp
 
 load_dotenv()
 
@@ -18,7 +18,7 @@ def create_app():
     app.register_blueprint(test_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
-    app.register_blueprint(session_bp)
+    app.register_blueprint(analytics_bp)
 
     return app
 
