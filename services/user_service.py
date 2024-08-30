@@ -150,3 +150,67 @@ def get_all_customers_from_database():
 
     except Exception as e:
         return None, str(e), 500
+
+
+def get_all_bim_users_from_database():
+    try:
+        response = supabase.table('user_profiles').select('*').execute()
+
+        if response and response.data:
+            return response.data, None, 200
+        else:
+            return None, "Bim Users not found", 404
+
+    except Exception as e:
+        return None, str(e), 500
+
+
+def add_bim_user_to_database(user_data):
+    print('add_bim_user_to_database')
+    email = user_data.get('email')
+    password = user_data.get('password')
+    bim_number = user_data.get('bim_number')
+
+    try:
+        # Create user in Supabase Auth
+        auth_response = supabase.auth.admin.create_user({
+            'email': email,
+            'password': password,
+            'email_confirm': True,
+            # 'user_metadata': {
+            #     'bim_number': bim_number
+            # }
+        })
+
+        print(auth_response)
+
+        if hasattr(auth_response, 'error') and auth_response.error:
+            print(f"Auth error: {auth_response.error['message']}")
+            return None, auth_response.error['message'], 400
+
+        supabase_user_id = auth_response.user.id
+
+        # Add user profile to the database
+        profile_response = supabase.table('user_profiles').insert({
+            'user_id': supabase_user_id,
+            'username': bim_number,
+            'first_login': True
+        }).execute()
+
+        print(profile_response)
+
+        if not profile_response.data:
+            print(f"Profile creation error: {profile_response}")
+            return None, 'Failed to create user profile', 500
+
+        return {
+            'user_id': supabase_user_id,
+            'email': email,
+            'bim_number': bim_number,
+            'message': 'User created successfully'
+        }, None, 201
+
+    except Exception as e:
+        print(f"Exception: {e}")
+        return None, str(e), 500
+
