@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from services.user_service import decode_clerk_token
 from models.user_models import User
-from services.user_service import add_user_to_database, get_user_from_database, get_all_customers_from_database
+from services.user_service import add_user_to_database, get_user_from_database, get_all_customers_from_database, get_all_bim_users_from_database, add_bim_user_to_database
 from pydantic import ValidationError
 from flask_cors import cross_origin
 
@@ -104,3 +104,42 @@ def add_user_manually():
     print(user_data)
 
 #     if user role is, read from body the user inputs
+
+# Get BIM Users
+@user_bp.route('/api/get-bim-users', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_bim_users():
+    bim_users, error, status_code = get_all_bim_users_from_database()
+
+    response = make_response(jsonify(bim_users), status_code)
+
+    if error:
+        return jsonify({'error': str(error)}), status_code
+
+    return response
+
+
+# Add BIM User
+@user_bp.route('/api/add-bim-user', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def add_bim_user():
+    print('from add_bim_user')
+
+    try:
+        data = request.get_json()
+        print(data)
+    except ValidationError as ve:
+        return jsonify({'error': str(ve)}), 400
+
+    user = {
+        'email': data['email'],
+        'password': data['password'],  # Assuming the request contains a 'password' field
+        'bim_number': data['bim_number']
+    }
+
+    user_data, error, status_code = add_bim_user_to_database(user)
+
+    if error:
+        return jsonify({'error': str(error)}), status_code
+
+    return jsonify(user_data), status_code
