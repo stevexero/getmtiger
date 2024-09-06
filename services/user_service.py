@@ -159,7 +159,8 @@ def get_all_bim_users_from_database():
         if response and response.data:
             return response.data, None, 200
         else:
-            return None, "Bim Users not found", 404
+            return [], None, 200
+            # return None, "Bim Users not found", 404
 
     except Exception as e:
         return None, str(e), 500
