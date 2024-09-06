@@ -105,6 +105,7 @@ def add_user_manually():
 
 #     if user role is, read from body the user inputs
 
+
 # Get BIM Users
 @user_bp.route('/api/get-bim-users', methods=['GET'])
 @cross_origin(supports_credentials=True)
@@ -123,19 +124,24 @@ def get_bim_users():
 @user_bp.route('/api/add-bim-user', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def add_bim_user():
-    print('from add_bim_user')
+    # print('from add_bim_user')
 
     try:
         data = request.get_json()
-        print(data)
+        # print(f"data: {data}")
     except ValidationError as ve:
         return jsonify({'error': str(ve)}), 400
 
     user = {
+        'first_name': data['firstName'],
+        'last_name': data['lastName'],
         'email': data['email'],
-        'password': data['password'],  # Assuming the request contains a 'password' field
-        'bim_number': data['bim_number']
+        'password': data['password'],
+        'role': data['role'],
+        'bim_number': data['bim_number'],
     }
+
+    # print(f"user: {user}")
 
     user_data, error, status_code = add_bim_user_to_database(user)
 

@@ -166,9 +166,12 @@ def get_all_bim_users_from_database():
 
 
 def add_bim_user_to_database(user_data):
-    print('add_bim_user_to_database')
+    # print('add_bim_user_to_database')
+    first_name = user_data.get('first_name')
+    last_name = user_data.get('last_name')
     email = user_data.get('email')
     password = user_data.get('password')
+    role = user_data.get('role')
     bim_number = user_data.get('bim_number')
 
     try:
@@ -182,7 +185,7 @@ def add_bim_user_to_database(user_data):
             # }
         })
 
-        print(auth_response)
+        # print(f"auth response: {auth_response}")
 
         if hasattr(auth_response, 'error') and auth_response.error:
             print(f"Auth error: {auth_response.error['message']}")
@@ -194,10 +197,13 @@ def add_bim_user_to_database(user_data):
         profile_response = supabase.table('user_profiles').insert({
             'user_id': supabase_user_id,
             'username': bim_number,
+            'first_name': first_name,
+            'last_name': last_name,
+            'role': role,
             'first_login': True
         }).execute()
 
-        print(profile_response)
+        # print(profile_response)
 
         if not profile_response.data:
             print(f"Profile creation error: {profile_response}")
@@ -207,6 +213,9 @@ def add_bim_user_to_database(user_data):
             'user_id': supabase_user_id,
             'email': email,
             'bim_number': bim_number,
+            'first_name': first_name,
+            'last_name': last_name,
+            'role': role,
             'message': 'User created successfully'
         }, None, 201
 
